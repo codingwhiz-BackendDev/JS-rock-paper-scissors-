@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock paper scissors game</title>
+    <style>
+        .container{
+            width: 70%;
+            margin: auto;
+            justify-content: space-around;
+        }
+        h1{
+            text-align: center;
+        }
+        img{
+            cursor: pointer;
+        }
+        img:hover{
+            box-shadow: 0px 10px 50px rgba(37, 50, 233, 1);
+        }
+        .imgdiv{
+            justify-content: space-around;
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rock Paper scissors</h1>
+        <div class="imgdiv" id="imgdiv">
+            <img src="images_2.jpeg" alt="" onclick="rps(this)" id="rock">
+            <img src="images.jpeg" alt="" onclick="rps(this)" id="paper">
+            <img src="images_4.jpeg" alt="" onclick="rps(this)" id="scissors">
+        </div>
+    </div>
+    <button onclick="reload()">Reload</button>
+
+    <script>
+        function rps(yourchoice){
+             var humanChoice, botChoice;
+             humanChoice = yourchoice.id
+             console.log(yourchoice)
+             console.log('human choice :',humanChoice)
+             botChoice = numberToChoice(randToRpsInt());
+            //console.log('computer choice: ', botChoice)
+             results = decidewinner(humanChoice, botChoice)
+             //console.log(results)
+             message = finalMessage(results);
+             //console.log(message.message)
+             rpsFrontend(yourchoice.id, botChoice, message)
+            
+        }
+
+        function randToRpsInt() {
+            return Math.floor(Math.random()* 3)
+        }
+        function numberToChoice(number){
+            return ['rock', 'paper', 'scissors'][number]
+        }
+        function decidewinner(yourchoice, computerchoice) {
+            var rpsDatabase = {
+                'rock': {'scissors': 1, 'rock': 0.5, 'paper': 0},
+                'paper': {'scissors': 0, 'rock': 1, 'paper': 0.5},
+                'scissors': {'scissors': 0, 'rock': 0, 'paper': 1},
+            }
+            var yourscore = rpsDatabase[yourchoice][computerchoice]
+            var computerscore = rpsDatabase[computerchoice][yourchoice]
+            return [yourscore, computerscore]
+        }
+        function finalMessage([yourscore, computerscore]){
+            if(yourscore === 0){
+                return {'message': 'You Lost!', 'color': 'red'}
+            } else if(yourscore === 0.5){
+                return {'message': 'You Tied!', 'color': 'yellow'}
+            }else{
+                return {'message': 'You Won!', 'color': 'green'}
+            }
+            
+        }
+        function rpsFrontend(humanImageChoice, botImageChoice, finalMessage){
+            var imageDatabase = {
+                'rock' : document.getElementById('rock').src,
+                'paper' : document.getElementById('paper').src,
+                'scissors' : document.getElementById('scissors').src
+            }
+            // lets remove images
+            document.getElementById('rock').remove()
+            document.getElementById('paper').remove()
+            document.getElementById('scissors').remove()
+
+            var humanDiv = document.createElement('div')
+            var botDiv = document.createElement('div')
+            var messageDiv = document.createElement('h1')
+
+            messageDiv.innerHTML = "<h1 style='color: " + finalMessage['color'] +"; font-size: 60px; padding: 30px; '>"+ finalMessage['message'] + "</h1>"
+            humanDiv.innerHTML = "<img src='" + imageDatabase[humanImageChoice] +"' style='box-shadow: 0px 10px 50px rgba(37, 50, 233, 1);'>"
+            botDiv.innerHTML = "<img src='" + imageDatabase[botImageChoice] +"' style='box-shadow: 0px 10px 50px rgba(243, 38, 24, 1);'>"
+
+            document.getElementById('imgdiv').appendChild(humanDiv)
+            document.getElementById('imgdiv').appendChild(messageDiv)
+            document.getElementById('imgdiv').appendChild(botDiv)
+        }
+
+        function reload(){
+            var playAgain = confirm('Do you want to keep playing');
+            playAgain ? location.reload() : alert('okay next time')
+        }
+    </script>
+</body>
+</html>
